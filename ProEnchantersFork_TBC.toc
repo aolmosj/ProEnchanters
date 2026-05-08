@@ -1,8 +1,8 @@
 ## Interface: 20505
-## Title: ProEnchanters
+## Title: ProEnchantersFork
 ## Notes: Set of tools used for creating a better work flow while running enchanting services for other players
-## IconTexture: Interface\AddOns\ProEnchanters\custom_icon.tga
-## Author: EffinOwen
+## IconTexture: Interface\AddOns\ProEnchantersFork\custom_icon.tga
+## Author: Nildur
 ## Version: 11.2.1
 ## SavedVariables: ProEnchantersOptions, ProEnchantersLog, ProEnchantersSessionLog, ProEnchantersTradeHistory, ProEnchantersWorkOrderFrames, ProEnchantersDB, ProEnchantersTables, ProEnchantersMsgLogHistory
 ## SavedVariablesPerCharacter: ProEnchantersCharOptions

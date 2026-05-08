@@ -49,27 +49,27 @@ ProEnchantersMsgLogHistory["timesTables"] = ProEnchantersMsgLogHistory["timesTab
 local defchatframelimit = DEFAULT_CHAT_FRAME:GetMaxLines()
 
 -- Minimap Stuff done through Ace ?? NO CLUE WHAT I'M DOIN THO
-local addon = LibStub("AceAddon-3.0"):NewAddon("ProEnchanters")
+local addon = LibStub("AceAddon-3.0"):NewAddon("ProEnchantersFork")
 local icon = LibStub("LibDBIcon-1.0", true)
-local PELDB = LibStub("LibDataBroker-1.1"):NewDataObject("ProEnchanters", {
+local PELDB = LibStub("LibDataBroker-1.1"):NewDataObject("ProEnchantersFork", {
 	type = "data source",
-	text = "Pro Enchanters",
-	icon = "Interface\\AddOns\\ProEnchanters\\custom_icon",
+	text = "Pro Enchanters Fork",
+	icon = "Interface\\AddOns\\ProEnchantersFork\\custom_icon",
 	OnClick = function(self, button)
 		if button == "LeftButton" then
 			if IsControlKeyDown() then
 				addon.db.profile.minimap.hide = true
-				icon:Hide("ProEnchanters")
+				icon:Hide("ProEnchantersFork")
 				if ProEnchantersSettingsFrame and ProEnchantersSettingsFrame.ShowMinimapButton then
 					ProEnchantersSettingsFrame.ShowMinimapButton:SetChecked(addon.db.profile.minimap.hide)
 				end
 			elseif IsAltKeyDown() then
 				ProEnchantersCharOptions["PauseInvites"] = not ProEnchantersCharOptions["PauseInvites"]
-				print("|cFF800080ProEnchanters|r: \"Pause Invites\" is now " ..
+				print("|cFF800080ProEnchantersFork|r: \"Pause Invites\" is now " ..
 					(ProEnchantersCharOptions["PauseInvites"] and "|cFF00FF00enabled|r" or "|cFFFF0000disabled|r"))
 				-- Update Tooltip
 				GameTooltip:ClearLines()
-				GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+				GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 				GameTooltip:AddLine(" ");
 				GameTooltip:AddLine("|cFFFFFFFFLeftclick:|r |cFFFFFF00Open|r")
 				local autoInviteColor = ProEnchantersCharOptions["AutoInvite"] and "|cFF00FF00" or "|cFFFF0000"
@@ -87,11 +87,11 @@ local PELDB = LibStub("LibDataBroker-1.1"):NewDataObject("ProEnchanters", {
 			elseif IsShiftKeyDown() then
 				ProEnchantersCharOptions["AutoInvite"] = not ProEnchantersCharOptions["AutoInvite"]
 				AutoInvite = ProEnchantersCharOptions["AutoInvite"]
-				print("|cFF800080ProEnchanters|r: \"Auto Invite\" is now " ..
+				print("|cFF800080ProEnchantersFork|r: \"Auto Invite\" is now " ..
 					(ProEnchantersCharOptions["AutoInvite"] and "|cFF00FF00enabled|r" or "|cFFFF0000disabled|r"))
 				-- Update Tooltip
 				GameTooltip:ClearLines()
-				GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+				GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 				GameTooltip:AddLine(" ");
 				GameTooltip:AddLine("|cFFFFFFFFLeftclick:|r |cFFFFFF00Open|r")
 				local autoInviteColor = ProEnchantersCharOptions["AutoInvite"] and "|cFF00FF00" or "|cFFFF0000"
@@ -127,14 +127,14 @@ local PELDB = LibStub("LibDataBroker-1.1"):NewDataObject("ProEnchanters", {
 					ProEnchantersWorkOrderEnchantsFrame:SetPoint("TOPLEFT", ProEnchantersWorkOrderFrame, "TOPRIGHT", -1, 0)
 					ProEnchantersWorkOrderEnchantsFrame:SetPoint("BOTTOMLEFT", ProEnchantersWorkOrderFrame, "BOTTOMRIGHT", -1, 0)
 				end
-				print("|cFF800080ProEnchanters|r: Frame position and size have been reset.")
+				print("|cFF800080ProEnchantersFork|r: Frame position and size have been reset.")
 			else
 				ProEnchantersCharOptions["WorkWhileClosed"] = not ProEnchantersCharOptions["WorkWhileClosed"]
-				print("|cFF800080ProEnchanters|r: \"Work while closed\" is now " ..
+				print("|cFF800080ProEnchantersFork|r: \"Work while closed\" is now " ..
 					(ProEnchantersCharOptions["WorkWhileClosed"] and "|cFF00FF00enabled|r" or "|cFFFF0000disabled|r"))
 				-- Refresh Tooltip
 				GameTooltip:ClearLines()
-				GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+				GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 				GameTooltip:AddLine(" ");
 				GameTooltip:AddLine("|cFFFFFFFFLeftclick:|r |cFFFFFF00Open|r")
 				local autoInviteColor = ProEnchantersCharOptions["AutoInvite"] and "|cFF00FF00" or "|cFFFF0000"
@@ -157,9 +157,9 @@ local PELDB = LibStub("LibDataBroker-1.1"):NewDataObject("ProEnchanters", {
 	end,
 	OnEnter = function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_NONE")
-		local anchor = icon:GetMinimapButton("ProEnchanters")
+		local anchor = icon:GetMinimapButton("ProEnchantersFork")
 		GameTooltip:SetPoint("TOPRIGHT", anchor, "BOTTOMLEFT")
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		GameTooltip:AddLine("|cFFFFFFFFLeftclick:|r |cFFFFFF00Open|r")
 		local autoInviteColor = ProEnchantersCharOptions["AutoInvite"] and "|cFF00FF00" or "|cFFFF0000"
@@ -191,7 +191,7 @@ function addon:OnInitialize()
 		self.db.profile.minimap.hide = false -- Set default to false
 	end
 
-	icon:Register("ProEnchanters", PELDB, self.db.profile.minimap)
+	icon:Register("ProEnchantersFork", PELDB, self.db.profile.minimap)
 end
 
 -- Sound Register
@@ -233,7 +233,7 @@ local sounds = {
 }
 
 for _, sound in ipairs(sounds) do
-	LSM:Register("sound", sound[1], "Interface\\AddOns\\ProEnchanters\\Media\\" .. sound[2])
+	LSM:Register("sound", sound[1], "Interface\\AddOns\\ProEnchantersFork\\Media\\" .. sound[2])
 end
 
 local workwork = "Orc Work work"
@@ -252,7 +252,7 @@ function PESound(soundname)
 end
 
 -- Fonts
-local peFontString = "Interface\\AddOns\\ProEnchanters\\Fonts\\PTSansNarrow.TTF"
+local peFontString = "Interface\\AddOns\\ProEnchantersFork\\Fonts\\PTSansNarrow.TTF"
 
 if LocalLanguage == "Chinese" or LocalLanguage == "Taiwanese" or LocalLanguage == "Korean" then
 	--print("local language returned as chinese or taiwanese or korean")
@@ -520,7 +520,7 @@ StaticPopupDialogs["CUS_REQ_POPUP"] = {
 	OnAccept = function(self)
 		local cusreq = (self.editBox:GetText())
 		local cusName = string.lower(ProEnchantersCustomerNameEditBox:GetText())
-		local cusreqHyperlink = "|cFFF5F5F5|Haddon:ProEnchanters:" ..
+		local cusreqHyperlink = "|cFFF5F5F5|Haddon:ProEnchantersFork:" ..
 			"cusreq" .. ":" .. cusreq .. ":" .. cusName .. ":1234|h" .. cusreq .. "|h|r"
 		AddTradeLine(cusName, MEDIUMSPRINGGREEN .. "Custom Request: " .. ColorClose .. cusreqHyperlink)
 	end,
@@ -734,7 +734,7 @@ end
 local function addProEnchantersMenu(menuName)
 	Menu.ModifyMenu(menuName, function(_, menuButton, contextData)
 		menuButton:CreateDivider()
-		menuButton:CreateTitle("Pro Enchanters")
+		menuButton:CreateTitle("Pro Enchanters Fork")
 		createWorkOrderButton(menuButton, contextData)
 		createCusFocusButton(menuButton, contextData)
 		if CheckIfTempIgnored(contextData.name) == true then
@@ -1493,7 +1493,7 @@ local function tooltipFormat(enchValue)
 	end
 
 	if mouseFocus == "enchantButton1" then
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		if IsShiftKeyDown() and IsAltKeyDown() and IsControlKeyDown() then
 			GameTooltip:AddLine("|cFFFFFFFFLeftclick+Shift+Ctrl+Alt|r")
@@ -1527,28 +1527,28 @@ local function tooltipFormat(enchValue)
 	end
 
 	if mouseFocus == "enchantButton2" then
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		GameTooltip:AddLine("|cFFFFFFFFApply " .. enchValue .. " to trade partners item|r")
 		GameTooltip:Show()
 	end
 
 	if mouseFocus == "enchantButton3" then
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		GameTooltip:AddLine("|cFFFFFFFFLink missing mats for " .. enchValue .. "|r")
 		GameTooltip:Show()
 	end
 
 	if mouseFocus == "enchantButton4" then
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		GameTooltip:AddLine("|cFFFFFFFFApply " .. enchValue .. " to trade partners item|r")
 		GameTooltip:Show()
 	end
 
 	if mouseFocus == "enchantButton5" then
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		GameTooltip:AddLine("|cFFFFFFFFLink missing mats for " .. enchValue .. "|r")
 		GameTooltip:Show()
@@ -1556,7 +1556,7 @@ local function tooltipFormat(enchValue)
 
 	if mouseFocus == "customerAllMats" then
 		GameTooltip:ClearLines()
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		if IsShiftKeyDown() then -- Link to player via party or whisper
 			GameTooltip:AddLine("|cFFFFFFFFLeftclick+Shift|r")
@@ -1575,14 +1575,14 @@ local function tooltipFormat(enchValue)
 	end
 
 	if mouseFocus == "targetButton" then
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		GameTooltip:AddLine("|cFFFFFFFFTarget focused customer|r")
 		GameTooltip:Show()
 	end
 
 	if mouseFocus == "createButton" then
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		local customerName = ProEnchantersCustomerNameEditBox:GetText()
 		if customerName == "" then
@@ -1593,49 +1593,49 @@ local function tooltipFormat(enchValue)
 	end
 
 	if mouseFocus == "ClearAllButton" then
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		GameTooltip:AddLine("|cFFFFFFFFMark all work orders as complete and close them|r")
 		GameTooltip:Show()
 	end
 
 	if mouseFocus == "GoldTradedDisplay" then
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		GameTooltip:AddLine("|cFFFFFFFFOpen the Gold Traded Log|r")
 		GameTooltip:Show()
 	end
 
 	if mouseFocus == "logsButton" then
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		GameTooltip:AddLine("|cFFFFFFFFOpen the Msg Logs for focused customer|r")
 		GameTooltip:Show()
 	end
 
 	if mouseFocus == "titleButton" then
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		GameTooltip:AddLine("|cFFFFFFFFMinimize/Maximize|r")
 		GameTooltip:Show()
 	end
 
 	if mouseFocus == "crafttitleButton" then
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		GameTooltip:AddLine("Click to Show/Hide Crafts missing required mats")
 		GameTooltip:Show()
 	end
 
 	if mouseFocus == "cusreqButton" then
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		GameTooltip:AddLine("|cFFFFFFFFCreate a custom request|r")
 		GameTooltip:Show()
 	end
 
 	if mouseFocus == "customerTitleButton" then
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		GameTooltip:AddLine("|cFFFFFFFFSet as current focused work order|r")
 		GameTooltip:Show()
@@ -1643,7 +1643,7 @@ local function tooltipFormat(enchValue)
 
 	if mouseFocus == "tradehistoryEditBox" then
 		GameTooltip:ClearLines()
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		if IsShiftKeyDown() then
 			GameTooltip:AddLine("|cFFFFFFFFEnchant Leftclick+Shift|r")
@@ -1662,14 +1662,14 @@ local function tooltipFormat(enchValue)
 	end
 
 	if mouseFocus == "minButton" then
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		GameTooltip:AddLine("|cFFFFFFFFMinimize/Maximize work order|r")
 		GameTooltip:Show()
 	end
 
 	if mouseFocus == "closeButton" then
-		GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+		GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 		GameTooltip:AddLine(" ");
 		GameTooltip:AddLine("|cFFFFFFFFMark end of work order and close|r")
 		GameTooltip:Show()
@@ -3418,7 +3418,7 @@ local craftBg = WorkOrderEnchantsFrame:CreateTexture(nil, "OVERLAY")
 						end
 						craftableBtnInfo.favbtn:Show()
 						craftableBtnInfo.favbg:Show()
-						craftableBtnInfo.favbg:SetTexture("Interface\\AddOns\\ProEnchanters\\FavoritesIconDisabled.blp") --NotFav Icon
+						craftableBtnInfo.favbg:SetTexture("Interface\\AddOns\\ProEnchantersFork\\FavoritesIconDisabled.blp") --NotFav Icon
 						craftableBtnInfo.button:Show()
 						craftableBtnInfo.background:SetPoint("TOPLEFT", ScrollChild, "TOPLEFT", cenchxOffset, -cenchyOffset)
 						craftableBtnInfo.background:Show()
@@ -3459,7 +3459,7 @@ for _, profType in ipairs(PEProfessionsOrder) do
 			if ProEnchantersOptions.favoritecrafts[spellId] == true then
 				craftablesFvBg:SetTexture("Interface\\COMMON\\FavoritesIcon.blp")
 			else
-				craftablesFvBg:SetTexture("Interface\\AddOns\\ProEnchanters\\FavoritesIconDisabled.blp") -- non fav
+				craftablesFvBg:SetTexture("Interface\\AddOns\\ProEnchantersFork\\FavoritesIconDisabled.blp") -- non fav
 			end
 			craftablesFvBg:SetSize(24, 24) -- Adjust the size as needed
 			craftablesFvBg:SetPoint("TOPRIGHT", craftableButtonBg, "TOPRIGHT", 6, 3)
@@ -4480,9 +4480,9 @@ function ProEnchantersCreateOptionsFrame()
 	MinimapButtonEnableCb:SetScript("OnClick", function(self)
 		addon.db.profile.minimap.hide = self:GetChecked()
 		if addon.db.profile.minimap.hide == true then
-			icon:Hide("ProEnchanters")
+			icon:Hide("ProEnchantersFork")
 		else
-			icon:Show("ProEnchanters")
+			icon:Show("ProEnchantersFork")
 		end
 	end)
 
@@ -5169,7 +5169,7 @@ function ProEnchantersCreateCreditsFrame()
 
 	local PFP = CreditsFrame:CreateTexture(nil, "OVERLAY")
 	--PFP:SetColorTexture(unpack(TopBarColorOpaque))  -- Set RGBA values for your preferred color and alpha
-	PFP:SetTexture("Interface\\AddOns\\ProEnchanters\\Media\\PFP.tga")
+	PFP:SetTexture("Interface\\AddOns\\ProEnchantersFork\\Media\\PFP.tga")
 	PFP:SetSize(128, 128) -- Adjust size as needed
 	PFP:SetPoint("TOP", titleBg, "BOTTOM", 0, -5)
 
@@ -5177,13 +5177,14 @@ function ProEnchantersCreateCreditsFrame()
 	local titleHeader = CreditsFrame:CreateFontString(nil, "OVERLAY")
 	titleHeader:SetFontObject(UIFontBasic)
 	titleHeader:SetPoint("TOP", titleBg, "TOP", 0, -8)
-	titleHeader:SetText("Pro Enchanters Credits")
+	titleHeader:SetText("Pro Enchanters Fork Credits")
 
 	local MainCreditsHeader = CreditsFrame:CreateFontString(nil, "OVERLAY")
 	MainCreditsHeader:SetFontObject("GameFontHighlight")
 	MainCreditsHeader:SetPoint("TOP", PFP, "BOTTOM", 0, -10)
 	MainCreditsHeader:SetText("Pro Enchanters add-on created by" ..
-		STEELBLUE .. " EffinOwen" .. ColorClose .. ".\nCome say Hello on discord!")
+		STEELBLUE .. " EffinOwen" .. ColorClose .. ".\nFork maintained by" ..
+		STEELBLUE .. " Nildur" .. ColorClose .. ".\nCome say Hello on discord!")
 	MainCreditsHeader:SetFont(peFontString, FontSize + 2, "")
 
 	local discordButton = CreateFrame("Button", nil, CreditsFrame)
@@ -5279,7 +5280,7 @@ function ProEnchantersCreateCreditsFrame()
 	local helpReminderHeader = CreditsFrame:CreateFontString(nil, "OVERLAY")
 	helpReminderHeader:SetFontObject("GameFontGreen")
 	helpReminderHeader:SetPoint("BOTTOM", closeBg, "BOTTOM", 0, 6)
-	helpReminderHeader:SetText(STEELBLUE .. "Thanks for using Pro Enchanters!" .. ColorClose)
+	helpReminderHeader:SetText(STEELBLUE .. "Thanks for using Pro Enchanters Fork!" .. ColorClose)
 	helpReminderHeader:SetFont(peFontString, FontSize, "")
 
 	-- version number
@@ -6908,7 +6909,7 @@ function ProEnchantersCreateColorsFrame()
 	local helpReminderHeader = ColorsFrame:CreateFontString(nil, "OVERLAY")
 	helpReminderHeader:SetFontObject(UIFontBasic)
 	helpReminderHeader:SetPoint("BOTTOM", closeBg, "BOTTOM", 0, 6)
-	helpReminderHeader:SetText(STEELBLUE .. "Thanks for using Pro Enchanters!" .. ColorClose)
+	helpReminderHeader:SetText(STEELBLUE .. "Thanks for using Pro Enchanters Fork!" .. ColorClose)
 
 	return ColorsFrame
 end
@@ -7084,7 +7085,7 @@ function ProEnchantersCreateSoundsFrame()
 	local helpReminderHeader = SoundsFrame:CreateFontString(nil, "OVERLAY")
 	helpReminderHeader:SetFontObject(UIFontBasic)
 	helpReminderHeader:SetPoint("BOTTOM", closeBg, "BOTTOM", 0, 5)
-	helpReminderHeader:SetText(STEELBLUE .. "Thanks for using Pro Enchanters!" .. ColorClose)
+	helpReminderHeader:SetText(STEELBLUE .. "Thanks for using Pro Enchanters Fork!" .. ColorClose)
 
 	-- SoundsFrame On Show Script
 	SoundsFrame:SetScript("OnShow", function()
@@ -7758,7 +7759,7 @@ function ProEnchantersCreateTriggersFrame()
 	local helpReminderHeader = TriggersFrame:CreateFontString(nil, "OVERLAY")
 	helpReminderHeader:SetFontObject(UIFontBasic)
 	helpReminderHeader:SetPoint("BOTTOM", closeBg, "BOTTOM", 0, 5)
-	helpReminderHeader:SetText(STEELBLUE .. "Thanks for using Pro Enchanters!" .. ColorClose)
+	helpReminderHeader:SetText(STEELBLUE .. "Thanks for using Pro Enchanters Fork!" .. ColorClose)
 
 	-- TriggersFrame On Show Script
 	TriggersFrame:SetScript("OnShow", function()
@@ -8255,7 +8256,7 @@ function ProEnchantersCreateWhisperTriggersFrame()
 	local helpReminderHeader = frame:CreateFontString(nil, "OVERLAY")
 	helpReminderHeader:SetFontObject(UIFontBasic)
 	helpReminderHeader:SetPoint("BOTTOM", closeBg, "BOTTOM", 0, 5)
-	helpReminderHeader:SetText(STEELBLUE .. "Thanks for using Pro Enchanters!" .. ColorClose)
+	helpReminderHeader:SetText(STEELBLUE .. "Thanks for using Pro Enchanters Fork!" .. ColorClose)
 
 	-- frame On Show Script
 	frame:SetScript("OnShow", function()
@@ -8520,7 +8521,7 @@ function ProEnchantersCreateImportFrame()
 	local helpReminderHeader = frame:CreateFontString(nil, "OVERLAY")
 	helpReminderHeader:SetFontObject(UIFontBasic)
 	helpReminderHeader:SetPoint("BOTTOM", closeBg, "BOTTOM", 0, 5)
-	helpReminderHeader:SetText(STEELBLUE .. "Thanks for using Pro Enchanters!" .. ColorClose)
+	helpReminderHeader:SetText(STEELBLUE .. "Thanks for using Pro Enchanters Fork!" .. ColorClose)
 
 	-- frame On Show Script
 	frame:SetScript("OnShow", function()
@@ -8760,7 +8761,7 @@ function ProEnchantersCreateGoldFrame()
 	local helpReminderHeader = frame:CreateFontString(nil, "OVERLAY")
 	helpReminderHeader:SetFontObject(UIFontBasic)
 	helpReminderHeader:SetPoint("BOTTOM", closeBg, "BOTTOM", 0, 5)
-	helpReminderHeader:SetText(STEELBLUE .. "Thanks for using Pro Enchanters!" .. ColorClose)
+	helpReminderHeader:SetText(STEELBLUE .. "Thanks for using Pro Enchanters Fork!" .. ColorClose)
 
 	-- frame On Show Script
 	frame:SetScript("OnShow", function()
@@ -9038,7 +9039,7 @@ function ProEnchantersCreateMsgLogFrame()
 	textLogHeaderEditBox:SetScript("OnHyperlinkClick", function(self, linkData, link, button)
 		local linkType, addon, param1, param2, param3 = strsplit(":", linkData)
 		if button == "LeftButton" then
-			if linkType == "addon" and addon == "ProEnchanters" then
+			if linkType == "addon" and addon == "ProEnchantersFork" then
 				local hlType = param1 -- type = msglog
 				local hlInfo = param2 -- info = line
 				local customerName = param3 -- name
@@ -9046,7 +9047,7 @@ function ProEnchantersCreateMsgLogFrame()
 				--print("hyplink leftclicked: " .. customerName .. " " .. hlInfo)
 			end
 		elseif button == "RightButton" then
-			if linkType == "addon" and addon == "ProEnchanters" then
+			if linkType == "addon" and addon == "ProEnchantersFork" then
 				local hlType = param1 -- type = msglog
 				local hlInfo = param2 -- info = msgtype
 				local customerName = param3 -- name
@@ -9650,7 +9651,7 @@ function CreateCusWorkOrder(customerName, bypass)
 	end)
 	tradehistoryEditBox:SetScript("OnHyperlinkClick", function(self, linkData, link, button)
 		local linkType, addon, param1, param2, param3 = strsplit(":", linkData)
-		if linkType == "addon" and addon == "ProEnchanters" then
+		if linkType == "addon" and addon == "ProEnchantersFork" then
 			local hlType = param1 -- type
 			local hlInfo = param2 -- info
 			local customerName = param3 -- name
@@ -10514,7 +10515,7 @@ function ProEnchantersTradeWindowCreateFrame()
 			if ProEnchantersOptions["EnableTooltips"] == true then
 				mouseFocus = "enchantButton"
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-				GameTooltip:AddLine("|cFF800080ProEnchanters|r")
+				GameTooltip:AddLine("|cFF800080ProEnchantersFork|r")
 				GameTooltip:AddLine(" ");
 				GameTooltip:AddLine("|cFFFFFFFFConvert essence|r")
 				GameTooltip:Show()
@@ -11603,7 +11604,7 @@ end
 ProEnchanters.frame:RegisterEvent("ADDON_LOADED")
 
 ProEnchanters.frame:SetScript("OnEvent", function(self, event, ...)
-	if event == "ADDON_LOADED" and select(1, ...) == "ProEnchanters" then
+	if event == "ADDON_LOADED" and select(1, ...) == "ProEnchantersFork" then
 		--print("ProEnchanters Addon Loaded Event Registered")
 		OnAddonLoaded()
 	elseif event == "CHAT_MSG_PARTY_LEADER" or event == "CHAT_MSG_RAID_LEADER" or event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_RAID" or event == "CHAT_MSG_GUILD" or event == "CHAT_MSG_SAY" or event == "CHAT_MSG_YELL" or event == "CHAT_MSG_CHANNEL" or event == "CHAT_MSG_SYSTEM" or event == "CHAT_MSG_WHISPER" or event == "CHAT_MSG_WHISPER_INFORM" then
@@ -11659,10 +11660,10 @@ SlashCmdList["PROENCHANTERS"] = function(msg)
 		print("DevMode turned to " .. tostring(ProEnchantersOptions["DevMode"]))
 	elseif msg == "minimap" then
 		if addon.db.profile.minimap.hide then
-			icon:Show("ProEnchanters")
+			icon:Show("ProEnchantersFork")
 			addon.db.profile.minimap.hide = false
 		else
-			icon:Hide("ProEnchanters")
+			icon:Hide("ProEnchantersFork")
 			addon.db.profile.minimap.hide = true
 		end
 		if ProEnchantersSettingsFrame and ProEnchantersSettingsFrame.ShowMinimapButton then
@@ -14139,7 +14140,7 @@ ProEnchanters.frame:RegisterEvent("PLAYER_REGEN_DISABLED")
 ProEnchanters.frame:SetScript("OnEvent", function(self, event, ...)
 	if event == "PLAYER_REGEN_DISABLED" then
 		HideAllFrames()
-	elseif event == "ADDON_LOADED" and select(1, ...) == "ProEnchanters" then
+	elseif event == "ADDON_LOADED" and select(1, ...) == "ProEnchantersFork" then
 		--print("ProEnchanters Addon Loaded Event Registered")
 		OnAddonLoaded()
 	elseif event == "CHAT_MSG_PARTY_LEADER" or event == "CHAT_MSG_RAID_LEADER" or event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_RAID" or event == "CHAT_MSG_GUILD" or event == "CHAT_MSG_SAY" or event == "CHAT_MSG_YELL" or event == "CHAT_MSG_CHANNEL" or event == "CHAT_MSG_SYSTEM" or event == "CHAT_MSG_WHISPER" or event == "CHAT_MSG_WHISPER_INFORM" then
