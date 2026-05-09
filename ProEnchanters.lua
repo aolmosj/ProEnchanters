@@ -471,8 +471,12 @@ function PEShowInvitePopup(playerName, msg, author2)
 
 	local f = CreateFrame("Frame", "PEInvitePopupFrame", UIParent, "BackdropTemplate")
 	f:SetSize(350, 120)
-	f:SetPoint("TOP", UIParent, "TOP", 0, -200)
-	f:SetFrameStrata("DIALOG")
+	if ProEnchantersWorkOrderFrame and ProEnchantersWorkOrderFrame:IsShown() then
+		f:SetPoint("CENTER", ProEnchantersWorkOrderFrame, "CENTER", 0, 0)
+	else
+		f:SetPoint("TOP", UIParent, "TOP", 0, -200)
+	end
+	f:SetFrameStrata("TOOLTIP")
 	f:SetBackdrop({
 		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
 		edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
@@ -2935,7 +2939,8 @@ function ProEnchantersCreateWorkOrderEnchantsFrame(ProEnchantersWorkOrderFrame)
 					UpdateCheckboxesBasedOnFilters()
 				elseif IsShiftKeyDown() and IsControlKeyDown() then -- force whisper link
 					local matsReq = ProEnchants_GetReagentList(reqEnchant)
-					local msgReq = enchName .. enchStats .. " Mats Required: " .. matsReq
+					local enchLink = C_Spell.GetSpellLink(spellId) or enchName
+					local msgReq = enchLink .. enchStats .. " Mats Required: " .. matsReq
 					local cusName = tostring(customerName)
 					if cusName and cusName ~= "" then
 						SendChatMessage(msgReq, "WHISPER", nil, cusName)
@@ -2945,7 +2950,8 @@ function ProEnchantersCreateWorkOrderEnchantsFrame(ProEnchantersWorkOrderFrame)
 				elseif IsShiftKeyDown() then -- Link to player via party or whisper
 					--local matsReq = ProEnchants_GetReagentListNoLink(reqEnchant)
 					local matsReq = ProEnchants_GetReagentList(reqEnchant)
-					local msgReq = enchName .. enchStats .. " Mats Required: " .. matsReq
+					local enchLink = C_Spell.GetSpellLink(spellId) or enchName
+					local msgReq = enchLink .. enchStats .. " Mats Required: " .. matsReq
 					local cusName = tostring(customerName)
 					if ProEnchantersOptions["WhisperMats"] == true and cusName and cusName ~= "" then
 						SendChatMessage(msgReq, "WHISPER", nil, cusName)
@@ -9767,8 +9773,10 @@ function CreateCusWorkOrder(customerName, bypass)
 				end
 				local reqEnchant = hlInfo
 				local enchName, enchStats = GetEnchantName(reqEnchant)
+				local reqSpellId = CombinedEnchants[reqEnchant] and CombinedEnchants[reqEnchant].spell_id
+				local enchLink = reqSpellId and C_Spell.GetSpellLink(reqSpellId) or enchName
 				local matsReq = ProEnchants_GetReagentList(reqEnchant)
-				local msgReq = enchName .. enchStats .. " Mats Required: " .. matsReq
+				local msgReq = enchLink .. enchStats .. " Mats Required: " .. matsReq
 				local cusName = tostring(customerName)
 				if ProEnchantersOptions["WhisperMats"] == true and cusName and cusName ~= "" then
 					SendChatMessage(msgReq, "WHISPER", nil, cusName)
@@ -9825,6 +9833,11 @@ function CreateCusWorkOrder(customerName, bypass)
 		table.insert(ProEnchantersTradeHistory[customerName], formattedLine)
 		PEPlayerInvited[customerName] = nil
 	end
+
+	-- Auto-assign enchants from whisper history
+	C_Timer.After(0.5, function()
+		PEAutoAssignEnchantsFromHistory(customerName)
+	end)
 
 	local minButton = CreateFrame("Button", nil, frame)
 	minButton:SetSize(80, 25)
@@ -11166,6 +11179,46 @@ local function LoadColorVariables3()
 	ButtonPushed = { r10 + r10P, g10 + g10P, b10 + b10P, 1 }
 	ButtonDisabled = { r10 - r10DH, g10 - g10DH, b10 - g10DH, 0.5 }
 	ButtonHighlight = { r10 + r10DH, g10 + g10DH, b10 + b10DH, 1 }
+end
+
+-- Build reverse map: spell_id -> enchant key (e.g. 13898 -> "ENCH13898")
+PESpellIDToEnchKey = {}
+for key, data in pairs(CombinedEnchants) do
+	if data.spell_id then
+		PESpellIDToEnchKey[data.spell_id] = key
+	end
+end
+
+PEWhisperHistory = {}
+
+function PEStoreWhisper(customerName, msg)
+	local name = string.lower(customerName)
+	PEWhisperHistory[name] = PEWhisperHistory[name] or {}
+	table.insert(PEWhisperHistory[name], msg)
+end
+
+function PEAutoAssignEnchantsFromHistory(customerName)
+	local customerName = string.lower(customerName)
+	local messages = PEWhisperHistory[customerName]
+	if not messages then return end
+
+	local found = {}
+	for _, msg in ipairs(messages) do
+		for spellId in msg:gmatch("|Henchant:(%d+)|") do
+			local enchKey = PESpellIDToEnchKey[tonumber(spellId)]
+			if enchKey and ProEnchantersCharOptions.filters[enchKey] == true and not found[enchKey] then
+				found[enchKey] = true
+				AddRequestedEnchant(customerName, enchKey)
+			end
+		end
+		for spellId in msg:gmatch("|Hspell:(%d+)") do
+			local enchKey = PESpellIDToEnchKey[tonumber(spellId)]
+			if enchKey and ProEnchantersCharOptions.filters[enchKey] == true and not found[enchKey] then
+				found[enchKey] = true
+				AddRequestedEnchant(customerName, enchKey)
+			end
+		end
+	end
 end
 
 local function OnAddonLoaded()
@@ -13241,8 +13294,10 @@ function ProEnchanters_OnChatEvent(self, event, ...)
 				--enchantKey, languageId
 				if ProEnchantersCharOptions.filters[enchantKey] == true then
 					local enchName, enchStats = GetEnchantName(enchantKey, languageId)
+					local reqSpellId = CombinedEnchants[enchantKey] and CombinedEnchants[enchantKey].spell_id
+					local enchLink = reqSpellId and C_Spell.GetSpellLink(reqSpellId) or enchName
 					local matsReq = ProEnchants_GetReagentList(enchantKey)
-					local msgReq = enchName .. enchStats .. " Mats Required: " .. matsReq
+					local msgReq = enchLink .. enchStats .. " Mats Required: " .. matsReq
 					if event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_RAID" or event == "CHAT_MSG_PARTY_LEADER" or event == "CHAT_MSG_RAID_LEADER" then
 						SendChatMessage(msgReq, IsInRaid() and "RAID" or "PARTY")
 						customcmdFound = 2
@@ -13401,6 +13456,8 @@ function ProEnchanters_OnChatEvent(self, event, ...)
 		local enchantKey = ""
 		local languageId = ""
 
+		-- Store whisper for auto-assign enchants
+		PEStoreWhisper(author3, msg)
 		-- add to msg log
 		PELogMsg(author3, msg, "whisper")
 
@@ -13487,8 +13544,10 @@ function ProEnchanters_OnChatEvent(self, event, ...)
 				--enchantKey, languageId
 				if ProEnchantersCharOptions.filters[enchantKey] == true then
 					local enchName, enchStats = GetEnchantName(enchantKey, languageId)
+					local reqSpellId = CombinedEnchants[enchantKey] and CombinedEnchants[enchantKey].spell_id
+					local enchLink = reqSpellId and C_Spell.GetSpellLink(reqSpellId) or enchName
 					local matsReq = ProEnchants_GetReagentList(enchantKey)
-					local msgReq = enchName .. enchStats .. " Mats Required: " .. matsReq
+					local msgReq = enchLink .. enchStats .. " Mats Required: " .. matsReq
 					SendChatMessage(msgReq, "WHISPER", nil, author2)
 					return
 				elseif ProEnchantersCharOptions.filters[enchantKey] == false then
@@ -13630,6 +13689,8 @@ function ProEnchanters_OnChatEvent(self, event, ...)
 		local msg2 = "Whispered: " .. msgLower
 		local author = string.gsub(author2, "%-.*", "")
 		local author3 = string.lower(author)
+		-- Store whisper for auto-assign enchants
+		PEStoreWhisper(author3, msg)
 		cmdFound = false
 		local startPos, endPos = string.find(msg, "!")
 		local isPartyFull = MaxPartySizeCheck()
@@ -13717,8 +13778,10 @@ function ProEnchanters_OnChatEvent(self, event, ...)
 				--enchantKey, languageId
 				if ProEnchantersCharOptions.filters[enchantKey] == true then
 					local enchName, enchStats = GetEnchantName(enchantKey, languageId)
+					local reqSpellId = CombinedEnchants[enchantKey] and CombinedEnchants[enchantKey].spell_id
+					local enchLink = reqSpellId and C_Spell.GetSpellLink(reqSpellId) or enchName
 					local matsReq = ProEnchants_GetReagentList(enchantKey)
-					local msgReq = enchName .. enchStats .. " Mats Required: " .. matsReq
+					local msgReq = enchLink .. enchStats .. " Mats Required: " .. matsReq
 					SendChatMessage(msgReq, "WHISPER", nil, author2)
 					return
 				elseif ProEnchantersCharOptions.filters[enchantKey] == false then

@@ -2015,7 +2015,7 @@ function AddRequestedEnchant(customerName, reqEnchant)
     reqEnchantName = LIGHTSEAGREEN ..
         "REQ ENCH: " ..
         ColorClose ..
-        "|cFFDA70D6|Haddon:ProEnchanters:" ..
+        "|cFFDA70D6|Haddon:ProEnchantersFork:" ..
         "reqench" .. ":" .. reqEnchant .. ":" .. customerName .. ":1234|h[" .. reqEnchantName .. "]|h|r"
     table.insert(ProEnchantersTradeHistory[customerName], reqEnchantName)
 
@@ -3319,19 +3319,19 @@ function PEUpdateMsgLog(name)--ProEnchantersMsgLogFrame.currentLogs
 
                 local fullentry = ""
                 if msgtype == "whisper" then
-                    fullentry = timeentry .. ORCHID .. "|Haddon:ProEnchanters:msglog:" .. "whisper" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. ORCHID .. " whispers: " .. line .. ColorClose
+                    fullentry = timeentry .. ORCHID .. "|Haddon:ProEnchantersFork:msglog:" .. "whisper" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. ORCHID .. " whispers: " .. line .. ColorClose
                 elseif msgtype == "party" then
-                    fullentry = timeentry .. CORNFLOWERBLUE .. "[Party] " .. ColorClose .. CORNFLOWERBLUE .. "|Haddon:ProEnchanters:msglog:" .. "party" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. CORNFLOWERBLUE .. ": " .. line .. ColorClose
+                    fullentry = timeentry .. CORNFLOWERBLUE .. "[Party] " .. ColorClose .. CORNFLOWERBLUE .. "|Haddon:ProEnchantersFork:msglog:" .. "party" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. CORNFLOWERBLUE .. ": " .. line .. ColorClose
                 elseif msgtype == "raid" then
-                    fullentry = timeentry .. ORANGERED .. "[Raid] " .. ColorClose .. ORANGERED .. "|Haddon:ProEnchanters:msglog:" .. "raid" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. ORANGERED .. ": " .. line .. ColorClose
+                    fullentry = timeentry .. ORANGERED .. "[Raid] " .. ColorClose .. ORANGERED .. "|Haddon:ProEnchantersFork:msglog:" .. "raid" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. ORANGERED .. ": " .. line .. ColorClose
                 elseif msgtype == "say" then
-                    fullentry = timeentry .. WHITE .. "|Haddon:ProEnchanters:msglog:" .. "say" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r says: " .. line
+                    fullentry = timeentry .. WHITE .. "|Haddon:ProEnchantersFork:msglog:" .. "say" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r says: " .. line
                 elseif msgtype == "yell" then
-                    fullentry = timeentry .. CRIMSON .. "|Haddon:ProEnchanters:msglog:" .. "yell" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. CRIMSON ..  " yells: " .. line .. ColorClose
+                    fullentry = timeentry .. CRIMSON .. "|Haddon:ProEnchantersFork:msglog:" .. "yell" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. CRIMSON ..  " yells: " .. line .. ColorClose
                 elseif msgtype == "invitemessage" then
-                    fullentry = timeentry .. ORANGE .. "|Haddon:ProEnchanters:msglog:" .. "invitemessage" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. ORANGE .. " triggered invite: " .. line .. ColorClose
+                    fullentry = timeentry .. ORANGE .. "|Haddon:ProEnchantersFork:msglog:" .. "invitemessage" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. ORANGE .. " triggered invite: " .. line .. ColorClose
                 else
-                    fullentry = timeentry .. WHITE .. "|Haddon:ProEnchanters:msglog:" .. "unknown" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. ": " .. line
+                    fullentry = timeentry .. WHITE .. "|Haddon:ProEnchantersFork:msglog:" .. "unknown" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. ": " .. line
                 end
 
                 table.insert(fulltext, fullentry)
@@ -3396,7 +3396,7 @@ function PEUpdateMsgLog(name)--ProEnchantersMsgLogFrame.currentLogs
                 --fullentry = timeentry .. capitalizedName .. ": " .. line]]
 
                 -- Create Hyperlink out of name
-                -- "|cFFDA70D6|Haddon:ProEnchanters:" .. "msglog" .. ":" .. line .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r"
+                -- "|cFFDA70D6|Haddon:ProEnchantersFork:" .. "msglog" .. ":" .. line .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r"
                 -- Final Formatting
 
                 local realmName = GetNormalizedRealmName()
@@ -3404,19 +3404,19 @@ function PEUpdateMsgLog(name)--ProEnchantersMsgLogFrame.currentLogs
 
                 local fullentry = ""
                 if msgtype == "whisper" then
-                    fullentry = timeentry .. ORCHID .. "|Haddon:ProEnchanters:msglog:" .. "whisper" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. ORCHID .. " whispers: " .. line .. ColorClose
+                    fullentry = timeentry .. ORCHID .. "|Haddon:ProEnchantersFork:msglog:" .. "whisper" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. ORCHID .. " whispers: " .. line .. ColorClose
                 elseif msgtype == "party" then
-                    fullentry = timeentry .. CORNFLOWERBLUE .. "[Party] " .. ColorClose .. CORNFLOWERBLUE .. "|Haddon:ProEnchanters:msglog:" .. "party" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. CORNFLOWERBLUE .. ": " .. line .. ColorClose
+                    fullentry = timeentry .. CORNFLOWERBLUE .. "[Party] " .. ColorClose .. CORNFLOWERBLUE .. "|Haddon:ProEnchantersFork:msglog:" .. "party" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. CORNFLOWERBLUE .. ": " .. line .. ColorClose
                 elseif msgtype == "raid" then
-                    fullentry = timeentry .. ORANGERED .. "[Raid] " .. ColorClose .. ORANGERED .. "|Haddon:ProEnchanters:msglog:" .. "raid" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. ORANGERED .. ": " .. line .. ColorClose
+                    fullentry = timeentry .. ORANGERED .. "[Raid] " .. ColorClose .. ORANGERED .. "|Haddon:ProEnchantersFork:msglog:" .. "raid" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. ORANGERED .. ": " .. line .. ColorClose
                 elseif msgtype == "say" then
-                    fullentry = timeentry .. WHITE .. "|Haddon:ProEnchanters:msglog:" .. "say" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r says: " .. line
+                    fullentry = timeentry .. WHITE .. "|Haddon:ProEnchantersFork:msglog:" .. "say" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r says: " .. line
                 elseif msgtype == "yell" then
-                    fullentry = timeentry .. CRIMSON .. "|Haddon:ProEnchanters:msglog:" .. "yell" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. CRIMSON ..  " yells: " .. line .. ColorClose
+                    fullentry = timeentry .. CRIMSON .. "|Haddon:ProEnchantersFork:msglog:" .. "yell" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. CRIMSON ..  " yells: " .. line .. ColorClose
                 elseif msgtype == "invitemessage" then
-                    fullentry = timeentry .. ORANGE .. "|Haddon:ProEnchanters:msglog:" .. "invitemessage" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. ORANGE .. " triggered invite: " .. line .. ColorClose
+                    fullentry = timeentry .. ORANGE .. "|Haddon:ProEnchantersFork:msglog:" .. "invitemessage" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. ORANGE .. " triggered invite: " .. line .. ColorClose
                 else
-                    fullentry = timeentry .. WHITE .. "|Haddon:ProEnchanters:msglog:" .. "unknown" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. ": " .. line
+                    fullentry = timeentry .. WHITE .. "|Haddon:ProEnchantersFork:msglog:" .. "unknown" .. ":" .. capitalizedName .. ":1234|h[" .. capitalizedName .. "]|h|r" .. ": " .. line
                 end
 
                 table.insert(fulltext, fullentry)
