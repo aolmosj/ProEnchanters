@@ -2459,7 +2459,7 @@ function ProEnchantersCreateWorkOrderEnchantsFrame(ProEnchantersWorkOrderFrame)
 
 	local filterBg = WorkOrderEnchantsFrame:CreateTexture(nil, "BACKGROUND")
 	filterBg:SetColorTexture(unpack(SecondaryBarColorOpaque)) -- Set RGBA values for your preferred color and alpha
-	filterBg:SetSize(230, 35)                              -- Adjust size as needed
+	filterBg:SetSize(230, 60)                              -- Adjust size as needed
 	filterBg:SetPoint("TOP", WorkOrderEnchantsFrame, "TOP", 0, -25)
 
 	local filterBgBorder = WorkOrderEnchantsFrame:CreateTexture(nil, "OVERLAY")
@@ -2467,10 +2467,10 @@ function ProEnchantersCreateWorkOrderEnchantsFrame(ProEnchantersWorkOrderFrame)
 	filterBgBorder:SetSize(230, 1)                         -- Adjust size as needed
 	filterBgBorder:SetPoint("BOTTOM", filterBg, "BOTTOM", 0, 0)
 
-	-- Create a header for the customer name input
+	-- Row 1: Filter text + SortBy dropdown + text input + Clear
 	local filterHeader = WorkOrderEnchantsFrame:CreateFontString(nil, "OVERLAY")
 	filterHeader:SetFontObject(UIFontBasic)
-	filterHeader:SetPoint("TOPLEFT", filterBg, "TOPLEFT", 10, -15)
+	filterHeader:SetPoint("TOPLEFT", filterBg, "TOPLEFT", 10, -8)
 	filterHeader:SetText("Filter:")
 
 	local defaultVal = ProEnchantersOptions["SortBy"]
@@ -2488,7 +2488,6 @@ function ProEnchantersCreateWorkOrderEnchantsFrame(ProEnchantersWorkOrderFrame)
 	}
 
 	local SortByDD = createDropdown(sortby_opts)
-	-- Don't forget to set your dropdown's points, we don't do this in the creation method for simplicities sake.
 	SortByDD:SetPoint("LEFT", filterHeader, "RIGHT", -25, -2)
 
 	-- Create an EditBox for the customer name
@@ -2510,7 +2509,7 @@ function ProEnchantersCreateWorkOrderEnchantsFrame(ProEnchantersWorkOrderFrame)
 	clearBg:SetSize(40, 20)                             -- Adjust size as needed
 	clearBg:SetPoint("LEFT", filterEditBox, "RIGHT", 5, 0)
 
-	-- Create a "Create" button
+	-- Create a "Clear" button
 	local clearButton = CreateFrame("Button", nil, WorkOrderEnchantsFrame) --, "GameMenuButtonTemplate")
 	clearButton:SetSize(40, 20)
 	clearButton:SetPoint("LEFT", filterEditBox, "RIGHT", 5, 0)
@@ -2521,9 +2520,32 @@ function ProEnchantersCreateWorkOrderEnchantsFrame(ProEnchantersWorkOrderFrame)
 	clearButton:SetHighlightFontObject("GameFontNormal")
 	clearButton:SetScript("OnClick", function()
 		filterEditBox:SetText("")
+		ProEnchantersOptions["SlotFilter"] = "All"
+		LibDD:UIDropDownMenu_SetText(SlotFilterDD, "All")
 		FilterEnchantButtons()
 		filterEditBox.ClearFocus(filterEditBox)
 	end)
+
+	-- Row 2: Slot filter dropdown
+	local slotHeader = WorkOrderEnchantsFrame:CreateFontString(nil, "OVERLAY")
+	slotHeader:SetFontObject(UIFontBasic)
+	slotHeader:SetPoint("TOPLEFT", filterHeader, "BOTTOMLEFT", 0, -8)
+	slotHeader:SetText("Slot:")
+
+	local slotfilter_opts = {
+		['name'] = 'SlotFilter',
+		['parent'] = WorkOrderEnchantsFrame,
+		['title'] = '',
+		['items'] = { "All", "Boots", "Bracer", "Chest", "Cloak", "Gloves", "Shield", "Weapon" },
+		['defaultVal'] = ProEnchantersOptions["SlotFilter"] or "All",
+		['changeFunc'] = function(dropdown_frame, dropdown_val)
+			ProEnchantersOptions["SlotFilter"] = dropdown_val
+			FilterEnchantButtons()
+		end
+	}
+
+	local SlotFilterDD = createDropdown(slotfilter_opts)
+	SlotFilterDD:SetPoint("LEFT", slotHeader, "RIGHT", -25, -2)
 
 	-- Setup for the scroll frame
 	local WorkOrderEnchantsScrollFrame = CreateFrame("ScrollFrame", "ProEnchantersWorkOrderEnchantsScrollFrame",
@@ -2536,7 +2558,7 @@ function ProEnchantersCreateWorkOrderEnchantsFrame(ProEnchantersWorkOrderFrame)
 	local scrollBg = WorkOrderEnchantsFrame:CreateTexture(nil, "ARTWORK")
 	scrollBg:SetColorTexture(unpack(ButtonDisabled)) -- Set RGBA values for your preferred color and alpha
 	scrollBg:SetSize(18, 570)                     -- Adjust size as needed
-	scrollBg:SetPoint("TOPRIGHT", WorkOrderEnchantsFrame, "TOPRIGHT", 0, -60)
+	scrollBg:SetPoint("TOPRIGHT", WorkOrderEnchantsFrame, "TOPRIGHT", 0, -85)
 	scrollBg:SetPoint("BOTTOMRIGHT", WorkOrderEnchantsFrame, "BOTTOMRIGHT", 0, 25)
 
 	-- Access the Scroll Bar
@@ -2643,6 +2665,7 @@ function ProEnchantersCreateWorkOrderEnchantsFrame(ProEnchantersWorkOrderFrame)
 	function FilterEnchantButtons()
 		local sortby = ProEnchantersOptions["SortBy"]
 		local filterText = filterEditBox:GetText():lower()
+		local slotFilter = ProEnchantersOptions["SlotFilter"] or "All"
 		local enchyOffset = 5
 		local enchxOffset = 5
 		local keys = keys
@@ -2657,11 +2680,13 @@ function ProEnchantersCreateWorkOrderEnchantsFrame(ProEnchantersWorkOrderFrame)
 				if ProEnchantersOptions.favorites[key] == true then
 					local enchantInfo = enchantButtons[key]
 					local enchantName = CombinedEnchants[key].name:lower()
+					local enchantSlot = CombinedEnchants[key].slot or ""
 					local enchantStats1 = CombinedEnchants[key].stats
 					local enchantStats2 = string.gsub(enchantStats1, "%(", "")
 					local enchantStats3 = string.gsub(enchantStats2, "%)", "")
 					local filterCheck = string.lower(enchantName .. enchantStats3)
-					if filterText == "" or filterCheck:find(filterText, 1, true) then
+					local slotMatch = (slotFilter == "All" or enchantSlot == slotFilter)
+					if slotMatch and (filterText == "" or filterCheck:find(filterText, 1, true)) then
 						-- Show and position the button
 						enchantInfo.background:SetPoint("TOPLEFT", ScrollChild, "TOPLEFT", enchxOffset, -enchyOffset)
 						enchantInfo.background:Show()
@@ -2688,11 +2713,13 @@ function ProEnchantersCreateWorkOrderEnchantsFrame(ProEnchantersWorkOrderFrame)
 				if ProEnchantersOptions.favorites[key] ~= true then
 					local enchantInfo = enchantButtons[key]
 					local enchantName = CombinedEnchants[key].name:lower()
+					local enchantSlot = CombinedEnchants[key].slot or ""
 					local enchantStats1 = CombinedEnchants[key].stats
 					local enchantStats2 = string.gsub(enchantStats1, "%(", "")
 					local enchantStats3 = string.gsub(enchantStats2, "%)", "")
 					local filterCheck = string.lower(enchantName .. enchantStats3)
-					if filterText == "" or filterCheck:find(filterText, 1, true) then
+					local slotMatch = (slotFilter == "All" or enchantSlot == slotFilter)
+					if slotMatch and (filterText == "" or filterCheck:find(filterText, 1, true)) then
 						-- Show and position the button
 						enchantInfo.background:SetPoint("TOPLEFT", ScrollChild, "TOPLEFT", enchxOffset, -enchyOffset)
 						enchantInfo.background:Show()
