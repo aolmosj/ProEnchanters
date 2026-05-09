@@ -346,7 +346,7 @@ function PEPotentialCustomerInvite(author3, author2, msg, msgtype)
             end
             --PlaySound(SOUNDKIT.MAP_PING)
         elseif ProEnchantersCharOptions["AutoInvite"] == false then
-            StaticPopup_Show("INVITE_PLAYER_POPUP", author3, displayMsg).data = { author3, msg, author2 }
+            PEShowInvitePopup(author3, displayMsg, author2)
             PELogMsg(author3, msg, "invitemessage")
             if ProEnchantersOptions["EnablePotentialCustomerSound"] == true then
                 PESound(ProEnchantersOptions["PotentialCustomerSound"])
@@ -366,7 +366,7 @@ function PEPotentialCustomerInvite(author3, author2, msg, msgtype)
             end
             --PlaySound(SOUNDKIT.MAP_PING)
         elseif ProEnchantersCharOptions["AutoInvite"] == false then
-            StaticPopup_Show("INVITE_PLAYER_POPUP", author3, displayMsg).data = { author3, msg, author2 }
+            PEShowInvitePopup(author3, displayMsg, author2)
             PELogMsg(author3, msg, "invitemessage")
             if ProEnchantersOptions["EnablePotentialCustomerSound"] == true then
                 PESound(ProEnchantersOptions["PotentialCustomerSound"])

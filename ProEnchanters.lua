@@ -464,50 +464,93 @@ if sessionGoldTraded and sessionGoldTraded > 0 then
 end
 
 
-StaticPopupDialogs["INVITE_PLAYER_POPUP"] = {
-	text = "Player %s potential customer: %s",
-	button1 = "Invite",
-	button2 = "Cancel",
-	button3 = "Temp Ignore",
-	OnAccept = function(self, data)
-		local playerName, msg, author2 = unpack(data)
-		local nametrim = string.gsub(author2, "%-.*", "")
-		-- AddonInvite = true
+-- Custom invite popup with 4 buttons (StaticPopup only supports 3)
+local PEInvitePopup = nil
+function PEShowInvitePopup(playerName, msg, author2)
+	if PEInvitePopup then PEInvitePopup:Hide() end
+
+	local f = CreateFrame("Frame", "PEInvitePopupFrame", UIParent, "BackdropTemplate")
+	f:SetSize(350, 120)
+	f:SetPoint("TOP", UIParent, "TOP", 0, -200)
+	f:SetFrameStrata("DIALOG")
+	f:SetBackdrop({
+		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+		edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+		edgeSize = 16,
+		insets = { left = 4, right = 4, top = 4, bottom = 4 },
+	})
+	f:SetMovable(true)
+	f:EnableMouse(true)
+	f:RegisterForDrag("LeftButton")
+	f:SetScript("OnDragStart", f.StartMoving)
+	f:SetScript("OnDragStop", f.StopMovingOrSizing)
+
+	local text = f:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	text:SetPoint("TOP", f, "TOP", 0, -15)
+	text:SetWidth(320)
+	text:SetText("Player " .. playerName .. " potential customer:\n" .. msg)
+
+	local btnWidth = 75
+	local btnHeight = 22
+	local spacing = 5
+	local totalWidth = (btnWidth * 4) + (spacing * 3)
+	local startX = -totalWidth / 2 + btnWidth / 2
+
+	local function makeButton(label, xOffset, onClick)
+		local btn = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
+		btn:SetSize(btnWidth, btnHeight)
+		btn:SetPoint("BOTTOM", f, "BOTTOM", xOffset, 12)
+		btn:SetText(label)
+		btn:SetScript("OnClick", function()
+			onClick()
+			f:Hide()
+		end)
+		return btn
+	end
+
+	makeButton("Invite", startX, function()
 		PEPlayerInvited[playerName] = msg
-		-- Add message to msg logs as well
 		if ProEnchantersOptions["PopUpWhispersOnly"] == true then
 			local autoInvMsg = AutoInviteMsg
 			local autoInvMsg2 = string.gsub(autoInvMsg, "CUSTOMER", playerName)
-			if CheckRecentlyWhispered(playerName) ~= true then -- proceed with sending message
-				ProEnchantersOptions["recentwhispers"][playerName]=GetTime()
+			if CheckRecentlyWhispered(playerName) ~= true then
+				ProEnchantersOptions["recentwhispers"][playerName] = GetTime()
 				AddWhisperCount()
-				if GetWhisperCount() > 60 then
-					WarnWhisperCounter()
-				end
-				-- proceed with whisper strings
+				if GetWhisperCount() > 60 then WarnWhisperCounter() end
 				SendChatMessage(autoInvMsg2, "WHISPER", nil, playerName)
 				AddToAddonInvited(playerName, "msgsent")
 			end
 		else
 			InviteUnitPEAddon(author2)
-            -- Add message to msg logs as well
-            PELogMsg(author2, msg, "invitemessage")
+			PELogMsg(author2, msg, "invitemessage")
 		end
-	end,
-	OnCancel = function(self, data, reason)
-		local playerName, msg, author2 = unpack(data)
-		print(author2 .. " pop-up canceled for " .. reason)
-	end,
-	OnAlt = function(self, data)
-		local playerName, msg, author2 = unpack(data)
+	end)
+
+	makeButton("Message", startX + btnWidth + spacing, function()
+		local autoInvMsg = AutoInviteMsg
+		local autoInvMsg2 = string.gsub(autoInvMsg, "CUSTOMER", playerName)
+		if CheckRecentlyWhispered(playerName) ~= true then
+			ProEnchantersOptions["recentwhispers"][playerName] = GetTime()
+			AddWhisperCount()
+			if GetWhisperCount() > 60 then WarnWhisperCounter() end
+			SendChatMessage(autoInvMsg2, "WHISPER", nil, playerName)
+			AddToAddonInvited(playerName, "msgsent")
+		end
+		PELogMsg(author2, msg, "invitemessage")
+	end)
+
+	makeButton("Temp Ignore", startX + (btnWidth + spacing) * 2, function()
 		local nametrim = string.gsub(author2, "%-.*", "")
 		AddToTempIgnored(nametrim)
-	end,
-	timeout = 0,
-	whileDead = true,
-	hideOnEscape = true,
-	preferredIndex = 3, -- Avoid taint issues
-}
+	end)
+
+	makeButton("Cancel", startX + (btnWidth + spacing) * 3, function()
+		print(author2 .. " pop-up canceled")
+	end)
+
+	f:Show()
+	PEInvitePopup = f
+end
 
 StaticPopupDialogs["CUS_REQ_POPUP"] = {
 	text = "Enter text for custom request",
@@ -2504,28 +2547,6 @@ function ProEnchantersCreateWorkOrderEnchantsFrame(ProEnchantersWorkOrderFrame)
 		FilterEnchantButtons()
 	end)
 
-	local clearBg = WorkOrderEnchantsFrame:CreateTexture(nil, "OVERLAY")
-	clearBg:SetColorTexture(unpack(MainButtonColorOpaque)) -- Set RGBA values for your preferred color and alpha
-	clearBg:SetSize(40, 20)                             -- Adjust size as needed
-	clearBg:SetPoint("LEFT", filterEditBox, "RIGHT", 5, 0)
-
-	-- Create a "Clear" button
-	local clearButton = CreateFrame("Button", nil, WorkOrderEnchantsFrame) --, "GameMenuButtonTemplate")
-	clearButton:SetSize(40, 20)
-	clearButton:SetPoint("LEFT", filterEditBox, "RIGHT", 5, 0)
-	clearButton:SetText("Clear")
-	local clearButtonText = clearButton:GetFontString()
-	clearButtonText:SetFont(peFontString, FontSize, "")
-	clearButton:SetNormalFontObject("GameFontHighlight")
-	clearButton:SetHighlightFontObject("GameFontNormal")
-	clearButton:SetScript("OnClick", function()
-		filterEditBox:SetText("")
-		ProEnchantersOptions["SlotFilter"] = "All"
-		LibDD:UIDropDownMenu_SetText(SlotFilterDD, "All")
-		FilterEnchantButtons()
-		filterEditBox.ClearFocus(filterEditBox)
-	end)
-
 	-- Row 2: Slot filter dropdown
 	local slotHeader = WorkOrderEnchantsFrame:CreateFontString(nil, "OVERLAY")
 	slotHeader:SetFontObject(UIFontBasic)
@@ -2546,6 +2567,29 @@ function ProEnchantersCreateWorkOrderEnchantsFrame(ProEnchantersWorkOrderFrame)
 
 	local SlotFilterDD = createDropdown(slotfilter_opts)
 	SlotFilterDD:SetPoint("LEFT", slotHeader, "RIGHT", -25, -2)
+
+	local clearBg = WorkOrderEnchantsFrame:CreateTexture(nil, "OVERLAY")
+	clearBg:SetColorTexture(unpack(MainButtonColorOpaque)) -- Set RGBA values for your preferred color and alpha
+	clearBg:SetSize(40, 20)                             -- Adjust size as needed
+	clearBg:SetPoint("LEFT", filterEditBox, "RIGHT", 5, 0)
+
+	-- Create a "Clear" button
+	local clearButton = CreateFrame("Button", nil, WorkOrderEnchantsFrame) --, "GameMenuButtonTemplate")
+	clearButton:SetSize(40, 20)
+	clearButton:SetPoint("LEFT", filterEditBox, "RIGHT", 5, 0)
+	clearButton:SetText("Clear")
+	local clearButtonText = clearButton:GetFontString()
+	clearButtonText:SetFont(peFontString, FontSize, "")
+	clearButton:SetNormalFontObject("GameFontHighlight")
+	clearButton:SetHighlightFontObject("GameFontNormal")
+	clearButton:SetScript("OnClick", function()
+		filterEditBox:SetText("")
+		ProEnchantersOptions["SlotFilter"] = "All"
+		LibDD:UIDropDownMenu_SetSelectedValue(SlotFilterDD, "All", "All")
+		LibDD:UIDropDownMenu_SetText(SlotFilterDD, "All")
+		FilterEnchantButtons()
+		filterEditBox.ClearFocus(filterEditBox)
+	end)
 
 	-- Setup for the scroll frame
 	local WorkOrderEnchantsScrollFrame = CreateFrame("ScrollFrame", "ProEnchantersWorkOrderEnchantsScrollFrame",
