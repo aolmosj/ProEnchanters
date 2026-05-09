@@ -2506,18 +2506,23 @@ function ProEnchantersCreateWorkOrderEnchantsFrame(ProEnchantersWorkOrderFrame)
 
 	local filterBg = WorkOrderEnchantsFrame:CreateTexture(nil, "BACKGROUND")
 	filterBg:SetColorTexture(unpack(SecondaryBarColorOpaque)) -- Set RGBA values for your preferred color and alpha
-	filterBg:SetSize(230, 60)                              -- Adjust size as needed
+	filterBg:SetSize(230, 30)                              -- Adjust size as needed
 	filterBg:SetPoint("TOP", WorkOrderEnchantsFrame, "TOP", 0, -25)
 
-	local filterBgBorder = WorkOrderEnchantsFrame:CreateTexture(nil, "OVERLAY")
-	filterBgBorder:SetColorTexture(unpack(TopBarColorOpaque)) -- Set RGBA values for your preferred color and alpha
-	filterBgBorder:SetSize(230, 1)                         -- Adjust size as needed
-	filterBgBorder:SetPoint("BOTTOM", filterBg, "BOTTOM", 0, 0)
+	local slotBg = WorkOrderEnchantsFrame:CreateTexture(nil, "BACKGROUND")
+	slotBg:SetColorTexture(unpack(SecondaryBarColorOpaque)) -- Set RGBA values for your preferred color and alpha
+	slotBg:SetSize(230, 25)                         -- Adjust size as needed
+	slotBg:SetPoint("TOP", filterBg, "BOTTOM", 0, 0)
+
+	local slotBgBorder = WorkOrderEnchantsFrame:CreateTexture(nil, "OVERLAY")
+	slotBgBorder:SetColorTexture(unpack(TopBarColorOpaque)) -- Set RGBA values for your preferred color and alpha
+	slotBgBorder:SetSize(230, 1)                         -- Adjust size as needed
+	slotBgBorder:SetPoint("BOTTOM", slotBg, "BOTTOM", 0, 0)
 
 	-- Row 1: Filter text + SortBy dropdown + text input + Clear
 	local filterHeader = WorkOrderEnchantsFrame:CreateFontString(nil, "OVERLAY")
 	filterHeader:SetFontObject(UIFontBasic)
-	filterHeader:SetPoint("TOPLEFT", filterBg, "TOPLEFT", 10, -8)
+	filterHeader:SetPoint("TOPLEFT", filterBg, "TOPLEFT", 10, -10)
 	filterHeader:SetText("Filter:")
 
 	local defaultVal = ProEnchantersOptions["SortBy"]
@@ -2551,11 +2556,11 @@ function ProEnchantersCreateWorkOrderEnchantsFrame(ProEnchantersWorkOrderFrame)
 		FilterEnchantButtons()
 	end)
 
-	-- Row 2: Slot filter dropdown
+	-- Row 2: Slot filter dropdown (in dark bar)
 	local slotHeader = WorkOrderEnchantsFrame:CreateFontString(nil, "OVERLAY")
 	slotHeader:SetFontObject(UIFontBasic)
-	slotHeader:SetPoint("TOPLEFT", filterHeader, "BOTTOMLEFT", 0, -8)
-	slotHeader:SetText("Slot:")
+	slotHeader:SetPoint("TOPLEFT", slotBg, "TOPLEFT", 10, -7)
+	slotHeader:SetText("Slot:  ")
 
 	local slotfilter_opts = {
 		['name'] = 'SlotFilter',
@@ -2599,14 +2604,14 @@ function ProEnchantersCreateWorkOrderEnchantsFrame(ProEnchantersWorkOrderFrame)
 	local WorkOrderEnchantsScrollFrame = CreateFrame("ScrollFrame", "ProEnchantersWorkOrderEnchantsScrollFrame",
 		WorkOrderEnchantsFrame, "UIPanelScrollFrameTemplate")
 	WorkOrderEnchantsScrollFrame:SetSize(200, 570)
-	WorkOrderEnchantsScrollFrame:SetPoint("TOP", filterBg, "BOTTOM", -8, -1)
+	WorkOrderEnchantsScrollFrame:SetPoint("TOP", slotBg, "BOTTOM", -8, -1)
 	WorkOrderEnchantsScrollFrame:SetPoint("BOTTOM", WorkOrderEnchantsFrame, "BOTTOM", -8, 25)
 
 	-- Create a scroll background
 	local scrollBg = WorkOrderEnchantsFrame:CreateTexture(nil, "ARTWORK")
 	scrollBg:SetColorTexture(unpack(ButtonDisabled)) -- Set RGBA values for your preferred color and alpha
 	scrollBg:SetSize(18, 570)                     -- Adjust size as needed
-	scrollBg:SetPoint("TOPRIGHT", WorkOrderEnchantsFrame, "TOPRIGHT", 0, -85)
+	scrollBg:SetPoint("TOPRIGHT", WorkOrderEnchantsFrame, "TOPRIGHT", 0, -82)
 	scrollBg:SetPoint("BOTTOMRIGHT", WorkOrderEnchantsFrame, "BOTTOMRIGHT", 0, 25)
 
 	-- Access the Scroll Bar
