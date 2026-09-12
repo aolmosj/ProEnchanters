@@ -307,8 +307,31 @@ function PEMsgCheck(msg, author2, tword) -- To be worked on
     end
 end
 
+function PETranslateSpellLinks(msg)
+    local translated = {}
+    for spellId in msg:gmatch("|Henchant:(%d+)|") do
+        local localName = C_Spell.GetSpellName(tonumber(spellId))
+        if localName then
+            translated[#translated + 1] = localName
+        end
+    end
+    if #translated == 0 then
+        for spellId in msg:gmatch("|Hspell:(%d+)") do
+            local localName = C_Spell.GetSpellName(tonumber(spellId))
+            if localName then
+                translated[#translated + 1] = localName
+            end
+        end
+    end
+    if #translated > 0 then
+        return msg .. "\n(" .. table.concat(translated, ", ") .. ")"
+    end
+    return msg
+end
+
 function PEPotentialCustomerInvite(author3, author2, msg, msgtype)
     --print("starting invite function for " .. author3 .. author2 .. msg)
+    local displayMsg = PETranslateSpellLinks(msg)
     if ProEnchantersCharOptions["WorkWhileClosed"] == true then
         if ProEnchantersCharOptions["AutoInvite"] == true then
             --AddonInvite = true
@@ -323,7 +346,7 @@ function PEPotentialCustomerInvite(author3, author2, msg, msgtype)
             end
             --PlaySound(SOUNDKIT.MAP_PING)
         elseif ProEnchantersCharOptions["AutoInvite"] == false then
-            StaticPopup_Show("INVITE_PLAYER_POPUP", author3, msg).data = { author3, msg, author2 }
+            StaticPopup_Show("INVITE_PLAYER_POPUP", author3, displayMsg).data = { author3, msg, author2 }
             PELogMsg(author3, msg, "invitemessage")
             if ProEnchantersOptions["EnablePotentialCustomerSound"] == true then
                 PESound(ProEnchantersOptions["PotentialCustomerSound"])
@@ -343,7 +366,7 @@ function PEPotentialCustomerInvite(author3, author2, msg, msgtype)
             end
             --PlaySound(SOUNDKIT.MAP_PING)
         elseif ProEnchantersCharOptions["AutoInvite"] == false then
-            StaticPopup_Show("INVITE_PLAYER_POPUP", author3, msg).data = { author3, msg, author2 }
+            StaticPopup_Show("INVITE_PLAYER_POPUP", author3, displayMsg).data = { author3, msg, author2 }
             PELogMsg(author3, msg, "invitemessage")
             if ProEnchantersOptions["EnablePotentialCustomerSound"] == true then
                 PESound(ProEnchantersOptions["PotentialCustomerSound"])
